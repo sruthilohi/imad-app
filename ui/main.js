@@ -66,15 +66,4 @@ request.onreadystatechange= function() {
 //make the request
 request.open('GET','http://sruthilohi.imad.hasura-app.io/submit_name?name=' + name,true);
 request.send('null');
-    //make request to the server and send the name
-    // capture the list of names and render in a list
-    
-    var names=['name1','name2','name3'];
-    var list='';
-    for(var i=0; i<=names.length; i++){
-    list += '<li>' + names[i] + '<li>';
-    }
-    var ul=document.getElementById('namelist');
-    ul.innerHTML= list;
-    
 };

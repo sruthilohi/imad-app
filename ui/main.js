@@ -13,9 +13,27 @@ img.onclick = function() {
    
 };*/
 var button= document.getElementById('counter');
-var counter = 0;
+
+
+// create a request object
+
 button.onclick = function(){
-    counter=counter+1;
-    var span=document.getElementById('count');
-    span.innerHTML=counter.toString();
+var request= new xmlHttpRequest();
+// capture the response and store it in a variable
+request.onreadystatechange= function() {
+    if (request.readystate===xmlHttpRequest.done){
+        //take action
+        if (request.status===200){
+           var counter=request.responseText  ;
+           var span=document.getElementById('count');
+           span.innerHTML=counter.toString();
+        }
+    }
+    //not done yet
+};
+
+//make the request
+request.open('Get','https://imad.hasura.io/counter',true);
+response.send('null');
+
 };

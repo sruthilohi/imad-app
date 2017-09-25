@@ -105,6 +105,16 @@ app.get('/counter', function(req,res) {
     counter=counter+1;
     res.send(counter.toString());
 });
+
+//app.get('/submit_name/:name', function(req,res){
+app.get('/submit_name', function(req,res){
+    //get the name from the request
+    var name = req.query.name;
+   names.push(name);
+   //JSON
+   res.send(JSON.stringify(names));
+});
+
 app.get('/:articleName', function (req, res) {
     var articleName = req.params.articleName;
   res.send(createtemplate(articles[articleName]));

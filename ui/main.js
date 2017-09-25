@@ -38,8 +38,7 @@ request.open('GET','http://sruthilohi.imad.hasura-app.io/counter',true);
 request.send('null');
 
 };
-var nameInput=document.getElementById('name');
-var name=nameInput.value;
+
 var submit=document.getElementById('submit_btn');
 submit.onclick= function() {
     var request= new XMLHttpRequest();
@@ -63,7 +62,8 @@ request.onreadystatechange= function() {
     }
     //not done yet
 };
-
+var nameInput=document.getElementById('name');
+var name=nameInput.value;
 //make the request
 request.open('GET','http://sruthilohi.imad.hasura-app.io/submit_name?name=' + name,true);
 request.send('null');

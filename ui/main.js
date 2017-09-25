@@ -33,7 +33,7 @@ request.onreadystatechange= function() {
 };
 
 //make the request
-request.open('Get','http://sruthilohi.imad.hasura-app.io/counter',true);
+request.open('GET','http://sruthilohi.imad.hasura-app.io/counter',true);
 response.send('null');
 
 };

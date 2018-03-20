@@ -47,9 +47,11 @@ body {
     border-bottom: 1px solid #ccc;
 }
 .navbar {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    width:80%;
+     margin: 0 auto;
+    padding: 0;
+    width: 75%;
+   /* padding-top: 15px;
+    padding-bottom: 15px; */
     border: 0;
     border-radius: 0;
     margin-bottom: 0;

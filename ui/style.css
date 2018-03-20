@@ -59,8 +59,25 @@ body {
     letter-spacing: 3px;
      background-color: #1126290d;
    }
-
-.navbar-nav li a:hover {
-    color: #1abc9c ;
+   .nav ul li {
+    list-style-type: none;
+    display: inline;
+    overflow: hidden;
 }
+.nav li a {
+    display: inline-block;
+    padding: 5px 10px;
+    color: #fff;
+    text-decoration: none;
+    border-right: 1px solid #fff;
+}
+.nav li a:hover {
+    background: white;
+    color: #A4A4A4;
+}
+
+
+/*.navbar-nav li a:hover {
+    color: #1abc9c ;
+}*/
 .margin {margin-bottom: 45px;}

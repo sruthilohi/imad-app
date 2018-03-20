@@ -46,14 +46,13 @@ body {
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
 }
-.h1{
+h1{
     font-size:1rem;
     font-family:TTNorms-Bold, sans-serif;
     font-weight:normal;
-}
-.h1{
+
     text-transform:uppercase;
-  letter-spacing:0.2rem;  
+  letter-spacing:0.1rem;  
   
 }
 .navbar {

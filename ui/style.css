@@ -66,7 +66,7 @@ h1{
     margin-bottom: 0;
     font-size: 16px;
     letter-spacing: 3px;
-     background-color: #1126290d;
+     background-color:"white";
    }
    .nav ul li {
     list-style-type: none;
@@ -82,7 +82,7 @@ h1{
 }
 .nav li a:hover {
     background: white;
-    color: #A4A4A4;
+    color: #DF3030;
 }
 
 

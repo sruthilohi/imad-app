@@ -15,7 +15,12 @@ body {
 .bold {
     font-weight: bold;
 }
-
+h1, h2 {
+    font-family:times new roman , georgia, serif;
+}
+a {
+    font-family:verdana,sans-serif;
+}
 .img-medium {
     height: 200px;
 }

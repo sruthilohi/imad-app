@@ -343,6 +343,7 @@ app.post('/submit-article', function(req,res){
    // var heading = req.body.heading;
    // var content= req.body.content;
     pool.query("INSERT INTO article (title, heading, date, content,user_id) VALUES ($1, $2, $3, $4, $5)", [ req.body.title, req.body.heading, new Date(),req.body.content, req.session.auth.userId ] , function(err,result){
+         console.log(result.rows);
         if(err){
         res.status(500).send(err.toString());
         

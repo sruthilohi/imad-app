@@ -1,209 +1,450 @@
-//console.log('Loaded!');
- //change the text of the main text div
-//var element = document.getElementById('main-text'
-//);
-/* element.innerhtml='new value';
-var img = document.getElementById('madi');
-img.onclick = function(){
- img.style.marginleft ='100px';  
-}; */
-//counter code
-
-/*var button = document.getElementById('counter');
-//var counter=0;
-button.onclick = function(){
-    
-    
-   
-   //create a request object
-   
-   var request = new XMLHttpRequest();
-    
-   // capture the response and store it in a variable
-    request.onreadystatechange = function(){
-        if (request.readyState === XMLHttpRequest.DONE){
-            //take some action
-            if (request.status === 200){
-                 var counter = request.responseText;
-                 //render the variable in the correct span
-                // counter=counter+1;
-                 var span = document.getElementById('count');
-                 span.innerHTML = counter.toString();
-          }
-            
-       }
-        //not done yet
-            };
-    //make a request
-    
-   request.open('GET','http://sruthilohi.imad.hasura-app.io/counter', true);
-    
-      request.send(null);
-    
-    
-};*/
 
 
-function loadLoginForm(){
-    var loginHtml = `
-     <h3>login to unlock awesome features</h3>
-     <input type = "text" id="username" placeholder="username"/>
-     <input type = "password" id="password" />
-     <br/><br/>
-   <button type="button"  id="login_btn" class="btn btn-info">
-    <span class="glyphicon glyphicon-user"></span>Login
-  </button>
-   <button type="button"  id="register_btn" class="btn btn-info">
-    <span class="glyphicon "></span>Register
-  </button>
-       
-       `;
-     document.getElementById('login_area').innerHTML = loginHtml;  
-   
-   
-   
-     // Submit username/password to login
-    var submit = document.getElementById('login_btn');
-    submit.onclick = function () {
-        // Create a request object
-         var request = new XMLHttpRequest();
+/* var express = require('express');
+var morgan = require('morgan');
+var path = require('path');
+var app = express();
+app.use(morgan('combined'));
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+});
+app.get('/ui/style.css', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'style.css'));
+});
+app.get('/ui/madi.png', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
+});
+var port = 8080; // Use 8080 for local development because you might already have apache running on 80
+app.listen(8080, function () {
+  console.log(`IMAD course app listening on port ${port}!`);
+}); */
+
+
+var express = require('express');
+var morgan = require('morgan');
+var path = require('path');
+var Pool = require('pg').Pool;
+var crypto = require('crypto');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+
+var config = {
+    user: 'sruthilohi',
+    database: 'sruthilohi',
+    host: 'db.imad.hasura-app.io',
+    port: '5432',
+    password: process.env.DB_PASSWORD
+};
+var app = express();
+app.use(morgan('combined'));
+app.use(bodyParser.json());
+app.use(session({
+    secret: 'someRandomSecretValue',
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 30},
+     resave: true,
+     saveUninitialized: true 
+}));
+
+
+/* var articles= {
+    
+    'article-one': {
+           title:'Article one  | sruthi', 
+            heading:'Article one',
+            date:'sep 1 2016',
+          content: `        <p>
+                          This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.
+                    </p>
+                    <p>
+                          This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.This is the content of my first article.
+                    </p>`
         
-        // Capture the response and store it in a variable
-                request.onreadystatechange = function () {
-          if (request.readyState === XMLHttpRequest.DONE) {
-              // Take some action
-              if (request.status === 200) {
-                  submit.value = 'Success!';
-              } else if (request.status === 403) {
-                  submit.value = 'Invalid credentials. Try again?';
-              } else if (request.status === 500) {
-                  alert('Something went wrong on the server');
-                  submit.value = 'Login';
-              } else {
-                  alert('Something went wrong on the server');
-                  submit.value = 'Login';
-              }
-             loadLogin();
-          }  
-          // Not done yet
-        };
+                },
+                
+      'article-three': {
+                title:'Article three  | sruthi', 
+                 heading:'Article three',
+                date:'sep 5 2016',
+                 content: `        <p>
+                            This is the content of my third article.
+                     </p>
+                     <p>
+                            This is the content of my third article.first article.
+                     </p>`
+        },
         
-        // Make the request
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        //console.log(username);
-       // console.log(password);
-        request.open('POST', '/login', true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        request.send(JSON.stringify({username: username, password: password}));  
-        submit.value = 'Logging in...';
-        
-    };
- var register = document.getElementById('register_btn');
-    register.onclick = function () {
-        // Create a request object
-        var request = new XMLHttpRequest();
-        
-        // Capture the response and store it in a variable
-        request.onreadystatechange = function () {
-          if (request.readyState === XMLHttpRequest.DONE) {
+        'article-two': {
+                title:'Article two  | sruthi', 
+                 heading:'Article two',
+                date:'sep 2 2016',
+                 content: ` <p>
+                            This is the content of my second article.
+                            </p>
+                    `
+        }
               
+                
+ 
+}; */
+
+
+function createTemplate (data) {
+    var title = data.title;
+    var date = data.date;
+    var heading = data.heading;
+    var content = data.content;
+    
+    var htmlTemplate = `
+    <html>
+      <head>
+      
+          <title>
+              ${title}
+          </title>
+          <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" >
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+          <link href="/ui/style.css" rel="stylesheet" />
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+      </head> 
+      <body>
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+              <a class="navbar-brand" href="#">blog</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="#">Personal</a></li>
+               <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Contact
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Twitter</a></li>
+                </ul>
+            </ul>
+          </div>
+          </div>
+        </nav>
+          <div class="container">
              
-              if (request.status === 200) {
-                  alert('User created successfully');
-                  register.value = 'Registered!';
-                   ClearFields();
-                 register.value = 'Register';
-                 
+              <hr/>
+              <h3>
+                  ${heading}
+              </h3>
+              <div>
+                  ${date.toDateString()}
+              </div>
+              <div class="well"> ${content}</div>
+           
+              <hr/>
+              <h4>Comments</h4>
+              <div id="comment_form">
+              </div>
+              <div id="comments">
+                <center>Loading comments...</center>
+              </div>
+          </div>
+          
+         <script type="text/javascript" src="/ui/article.js">
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      </body>
+      
+    </html>
+    `;
+    return htmlTemplate;
+}
+
+var pool = new Pool(config);
+
+function hash(input,salt) {
+   //how do we create a hash 
+    var hashed = crypto.pbkdf2Sync(input,salt,10000,512,'sha512');
+    return ["pbkdf2", "10000", salt, hashed.toString('hex')].join('$') ;
+}
+app.get('/hash/:input', function(req,res){
+   var hashedstring = hash(req.params.input,'this-is-a-random-string');
+   res.send(hashedstring);
+});
+
+
+
+app.post('/create-user', function(req,res){
+    var username = req.body.username;
+    var password = req.body.password;
+    if(!username.trim() || !password.trim() || username.length>32 || password.length>32){
+           res.status(400).send("Username/password field can't be blank.Please Enter Username/Password:(Upto 32 chars)");   //Err if blank,tabs and space detected.
+      }
+       else if(!/^[a-zA-Z0-9_ .@]+$/.test(username)){  //If username contains other than a-z,A-Z,0-9,@._BLANKSPACE then send error.
+    res.status(500).send("Username can't contain special characters except _.@");
+        }
+      else{
+    var salt = crypto.randomBytes(128).toString('hex');
+    var dbstring = hash(password, salt); 
+    pool.query('INSERT INTO "user" (username, password) VALUES ($1, $2)', [username,dbstring] , function(err,result){
+        if(err){
+        res.status(500).send(err.toString());
+        
+    }  else {
+        res.send('user sucessfully created :' + username);
+    } 
+        
+    });
+     }
+});
+app.post('/login', function (req, res) {
+   var username = req.body.username;
+   var password = req.body.password;
+    if(!username.trim() || !password.trim() || username.length>32 || password.length>32){
+      res.status(400).send('Cannot leave username or password blank.Please Enter Username/Password:(Upto 32 chars)');
+ }
+ else if(!/^[a-zA-Z0-9_ .@]+$/.test(username)){  //If username contains other than a-z,A-Z,0-9,@._BLANKSPACE then send error.
+    res.status(500).send("Username can't contain special characters except _.@");
+}
+else{
+   pool.query('SELECT * FROM "user" WHERE username = $1', [username], function (err, result) {
+      if (err) {
+          res.status(500).send(err.toString());
+      } else {
+          if (result.rows.length === 0) {
+              res.status(403).send('username/password is invalid');
+          } else {
+              // Match the password
+              var dbString = result.rows[0].password;
+              var salt = dbString.split('$')[2];
+              var hashedPassword = hash(password, salt); // Creating a hash based on the password submitted and the original salt
+              if (hashedPassword === dbString) {
+                
+                // Set the session
+                req.session.auth = {userId: result.rows[0].id};
+                // set cookie with a session id
+                // internally, on the server side, it maps the session id to an object
+                // { auth: {userId }}
+                
+                res.send('credentials correct!');
+                
               } else {
-                  alert('Could not register the user');
-                  register.value = 'Register';
-                  ClearFields();
+                res.status(403).send('username/password is invalid');
               }
           }
-        };
-        
-        // Make the request
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        //console.log(username);
-        //console.log(password);
-        request.open('POST', '/create-user', true);
-        request.setRequestHeader('Content-Type', 'application/json');
-        
-        request.send(JSON.stringify({username: username, password: password}));  
-        register.value = 'Registering...';
-    
-    };
-     
-     
+      }
+     });
 }
-function ClearFields() {
+});
+app.get('/check-login', function (req, res) {
+   if (req.session && req.session.auth && req.session.auth.userId) {
+      
+       pool.query('SELECT * FROM "user" WHERE id = $1', [req.session.auth.userId], function (err, result) {
+           if (err) {
+              res.status(500).send(err.toString());
+           } else {
+              res.send(result.rows[0].username);    
+           }
+       });
+   } else {
+       res.status(400).send('You are not logged in');
+   }
+});
 
-     document.getElementById('username').value = "";
-     document.getElementById('password').value = "";
-}
- 
-function loadarticles () {
-    // Check if the user is already logged in
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        
-        
-        if (request.readyState === XMLHttpRequest.DONE) {
-            var articles = document.getElementById('articles');
-            if (request.status === 200) {
-                var content = '<ul>';
-                
-               var articleData = JSON.parse(this.responseText);
-               for (var i=0; i< articleData.length ; i++){
-                   content += `<li>
-                    <a href="/articles/${articleData[i].title}"><h4>${articleData[i].heading}</h4></a>
-                    (${articleData[i].date.split('T')[0]})</li>`;
+app.get('/logout', function (req, res) {
+   delete req.session.auth;
+   res.send('<html><body>Logged out!<br/><br/><a href="/">Back to home</a></body></html>');
+});
+
+
+app.get('/get-articles', function (req, res) {
+    
+    //query article table
+    //return a response with results
+    
+  
+       pool.query('SELECT * FROM article ORDER BY date DESC', function (err, result) {
+           if (err) {
+              res.status(500).send(err.toString());
+           } else {
+              res.send(JSON.stringify(result.rows));   
+           }
+       });
+});
+
+app.get('/get-comments/:articleName', function (req, res) {
+    
+    //query article ,user and comment  table
+    //return a response with * comments of a particular article
+    // pool.query('SELECT comment.*, "user".username FROM article, comment, "user" WHERE article.title = $1 AND article.id = comment//.article_id AND comment.user_id = "user".id ORDER BY comment.timestamp DESC', [req.params.articleName], function (err, result) {
+  
+       pool.query('SELECT comment.*, "user".username FROM comment , "user", article WHERE article.title = $1 AND article.id = comment.article_id AND comment.user_id = "user".id ORDER BY comment.timestamp DESC', [req.params.articleName] , function (err, result) { console.log(result.rows);
+           if (err) {
+              res.status(500).send(err.toString());
+           } else {
+              res.send(JSON.stringify(result.rows));   
+           }
+       });
+});
+
+
+
+app.post('/submit-comment/:articleName', function (req, res) {
+   // Check if the user is logged in
+    if (req.session && req.session.auth && req.session.auth.userId) {
+        // First check if the article exists and get the article-id
+        pool.query('SELECT * FROM article WHERE title = $1', [req.params.articleName], function (err, result) {
+            if (err) {
+                res.status(500).send(err.toString());
+            } else {
+                if (result.rows.length === 0) {
+                    res.status(400).send('Article not found');
+                } else {
+                    var articleId = result.rows[0].id;
+                    // Now insert the right comment for this article
+                    pool.query("INSERT INTO comment (comment, article_id, user_id) VALUES ($1, $2, $3)",
+                        [req.body.comment, articleId, req.session.auth.userId], function (err, result) {
+                            if (err) {
+                                res.status(500).send(err.toString());
+                            } else {
+                                res.status(200).send('Comment inserted!');
+                            }
+                        });
                 }
-                content += "</ul>";
-                articles.innerHTML = content;
-            } else {
-              articles.innerHTML = ('Ooops! could not load all articles');  
             }
-        }
-    };
+       });     
+    } else {
+        res.status(403).send('Only logged in users can comment');
+    }
+});
+
+app.get('/test-db', function(req,res){
     
-    request.open('GET', '/get-articles', true);
-    request.send(null);
-} 
-function loadLoggedInUser (username) {
-    var loginArea = document.getElementById('login_area');
-    loginArea.innerHTML = `
-        <h3> Hi <i>${username}</i></h3>
-        <a href="/logout"><h3>Logout</h3></a>
-    `;
-    var newArticle = document.getElementById('new_article');
-    newArticle.innerHTML = `
-         <div class="page-header">
-         <strong><a  href="/article"><h3>New Article<h3></a></strong> 
-         </div>
-    `;
+   //make a select request
+    // return a response with result
+  pool.query('SELECT * from test' , function(err,result){
+    if(err){
+        res.status(500).send(err.toString());
+        
+    }  else {
+        res.send(JSON.stringify(result.rows));
+    } 
+   });
+  
     
-}
+});
+app.post('/submit-article', function(req,res){
+ if (req.session && req.session.auth && req.session.auth.userId) {
+    //var title = req.body.title;
+   // var heading = req.body.heading;
+   // var content= req.body.content;
+    pool.query("INSERT INTO article (title, heading, date, content,user_id) VALUES ($1, $2, $3, $4, $5)", [ req.body.title, req.body.heading, new Date(),req.body.content, req.session.auth.userId ] , function(err,result){
+         console.log(result.rows);
+        if(err){
+        res.status(500).send(err.toString());
+        
+    }  else {
+        res.send('Article sucessfully created ' );
+    } 
+        
+    });
+ } else {
+        res.status(403).send('Only logged in users can create article');
+    }
+    
+});
+
+ app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'index.html'));
+});
+
+/*var counter=0;
+app.get('/counter', function(req,res){
+counter=counter+1;
+res.send(counter.toString());
+});
+ app.get('/:articleName', function (req, res) {
+    var articleName = rec.params.articleName;
+    
+  res.send(createtemplate(articles[articleName]));
+}); */
+
+app.get('/articles/:articleName', function(req,res){
+    
+    //articlename==article-one
+    //articles[articlename]=={} content object for article-one
+ // var articlename = req.params.articlename;
+  pool.query('SELECT * from article where title = $1', [req.params.articleName], function (err, result) {
+      
+      if(err) {
+          res.status(500).send(err.toString());
+          
+      } else {
+          if(result.rows.length === 0){
+              res.status(404).send('article not found');
+           }else {
+               var articleData = result.rows[0];
+              // var articleId = result.rows[0].id;
+                res.send( createTemplate(articleData));
+           }
+      }
+  });
+  
+});
+app.get('/article', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'article.html'));
+});
+
+app.get('/journey', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'journeytrack.html'));
+});
 
 
-function loadLogin () {
-    // Check if the user is already logged in
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (request.readyState === XMLHttpRequest.DONE) {
-            if (request.status === 200) {
-                loadLoggedInUser(this.responseText);
-                
-            } else {
-                loadLoginForm();
-            }
-        }
-    };
+
+app.get('/ui/style.css', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'style.css'));
+});
+
+app.get('/ui/main.js', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'main.js'));
+});
+
+
+app.get('/ui/madi.png', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', 'madi.png'));
+});
+
+ /*pool.query('INSERT INTO comments (comment, date, article-id ) VALUES ($1, $2, $3)', [req.body.comments, new Date(), articleId ],  function(err) {
+    if (err) return onError(err);
+});*/
+/*pool.query('INSERT INTO comments ( comment, articleid ) VALUES ($1, $2)', [req.body.comments, articleId ],  function(err) {
+    if (err) return onError(err);
+});*/
+var names = [];
+app.get('/submit-name', function(req,res){  //submit-name?name=xxx
+// get the name from the request
+    var name = req.query.name;
+    names.push(name);
+    res.send(JSON.stringify(names));
     
-    request.open('GET', '/check-login', true);
-    request.send(null);
-}
-loadLoginForm ();
-loadarticles();
+});
+
+app.get('/ui/:fileName', function (req, res) {
+  res.sendFile(path.join(__dirname, 'ui', req.params.fileName));
+});
+
+// Do not change port, otherwise your app won't run on IMAD servers
+// Use 8080 only for local development if you already have apache running on 80
+
+var port = 80;
+app.listen(port, function () {
+  console.log(`IMAD course app listening on port ${port}!`);
+});
+/*var port = 8080; // Use 8080 for local development because you might already have apache running on 80
+app.listen(8080, function () {
+  console.log(`IMAD course app listening on port ${port}!`);
+});*/
